@@ -1,0 +1,4 @@
+[out:json];
+area[name="United States"];
+(node[place="town"](area););
+out;

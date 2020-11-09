@@ -1,0 +1,4 @@
+[out:json]; 
+area[name = "Paris"]; 
+node(area)[amenity = cafe]; 
+out;
