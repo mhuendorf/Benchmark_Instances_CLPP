@@ -1,0 +1,4 @@
+[out:json];
+area[name="United States"];
+(node[brand="McDonald's"](area););
+out;
