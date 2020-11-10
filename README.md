@@ -4,9 +4,10 @@ This reposetory holds Benchmark Instances for the 'Corner Label Placement Proble
 
 ## Sets of Instances
 There are 3 general Sets of Instances to be considered:
- - Instances from real data
- - Instances drawn from literature
- - Instances generated ourselfs
+ - [Instances](https://github.com/mhuendorf/Benchmark_Instances_CLPP/tree/master/benchmark_instances/osm_instances "Real Instances") from real data 
+ - [Instances](https://github.com/mhuendorf/Benchmark_Instances_CLPP/tree/master/benchmark_instances/literature_instances "Literature Instances") drawn from literature 
+ - [Instances](https://github.com/mhuendorf/Benchmark_Instances_CLPP/tree/master/benchmark_instances/produced_instances "Produced Instances") generated ourselfs
+ 
  All classes of Instances can be found [here](https://github.com/mhuendorf/Benchmark_Instances_CLPP/tree/master/benchmark_instances "Benchmark Instances").
  
 ## Code
