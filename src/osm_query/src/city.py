@@ -78,8 +78,8 @@ def convert_to_instance(infile, outfile, height, width_factor, scaling_factor):
             coords.append((lon, lat))
             out.write(str(lat) + " " 
                         + str(lon) + " " 
-                        + str(height) + " " 
                         + str(int(len(name) * width_factor)) + " "
+                        + str(height) + " " 
                         + name + '\n')
     
     return coords
