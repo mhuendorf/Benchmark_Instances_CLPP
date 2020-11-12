@@ -1,7 +1,7 @@
 name,height,width,scale
-germantowns,300,100,4
-germancities,500,250,4
-americancities,500,250,4
-americantowns,300,100,4
-paris,30,10,5
-mcdonalds, 300, 100, 4
+germantowns,30,5,100
+germancities,10,4,1000
+americancities,30,10,1000
+americantowns,6,5,1000
+paris,35,10,1
+mcdonalds,3,2,1000

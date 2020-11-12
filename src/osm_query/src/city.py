@@ -1,9 +1,13 @@
 import sys
 import requests
 import json
+import math
 import numpy as np 
 import matplotlib.pyplot as plt
+from pyproj import Transformer
 
+# lat/lon to mercator
+TRAN_4326_TO_3857 = Transformer.from_crs("EPSG:4326", "EPSG:3857")
 
 def read_query_file(filename):
     with open(filename, 'r') as file:
@@ -18,6 +22,12 @@ def query(query, outfilename):
     with open(outfilename, 'w') as outfile:
         json.dump(data, outfile)
 
+# returns coordinates in meters east of 0 and meters north of 0
+# so the lower left corner of the map is (0,0)
+def mercator(lat, lon, scaling_factor):
+  x, y = TRAN_4326_TO_3857.transform(lat, lon)
+  return round(x/scaling_factor), round(y/scaling_factor)
+
 
 def visualize_xy(coords):
     X = np.array(coords)
@@ -27,15 +37,6 @@ def visualize_xy(coords):
     plt.ylabel('Latitude')
     plt.axis('equal')
     plt.show()
-
-
-def to_int(val, scaling_factor):
-    return int(round(val, scaling_factor) * 10**scaling_factor) # 100000
-
-
-def normalize(val, min, scaling_factor):
-    return to_int(val, scaling_factor) - min
-
 
 def remove_whitespace(str):
     return str.strip().replace(" ", "_")
@@ -47,8 +48,6 @@ def convert_to_instance(infile, outfile, height, width_factor, scaling_factor):
         data = json.load(json_file)
 
     cities = []
-    lon_min = 100000000
-    lat_min = 100000000
     for element in data['elements']:
         if element['type'] == 'node':
 
@@ -56,15 +55,10 @@ def convert_to_instance(infile, outfile, height, width_factor, scaling_factor):
             if('name' in tags):
                 name = remove_whitespace(tags['name'])
                 lon = element['lon']
-                if lon < lon_min:
-                    lon_min = lon
                 lat = element['lat']
-                if lat < lat_min:
-                    lat_min = lat
-                cities.append((lon, lat, name))
+                x, y = mercator(lat, lon, scaling_factor)
+                cities.append((x, y, name))
 
-    lon_min = to_int(lon_min, scaling_factor)
-    lat_min = to_int(lat_min, scaling_factor)
     
     coords = []
 
@@ -72,12 +66,10 @@ def convert_to_instance(infile, outfile, height, width_factor, scaling_factor):
 
         out.write(str(len(cities)) + '\n')
 
-        for lon, lat, name in cities:
-            lon = normalize(lon, lon_min, scaling_factor)
-            lat = normalize(lat, lat_min, scaling_factor)
-            coords.append((lon, lat))
-            out.write(str(lat) + " " 
-                        + str(lon) + " " 
+        for x, y, name in cities:
+            coords.append((x, y))
+            out.write(str(x) + " " 
+                        + str(y) + " " 
                         + str(int(len(name) * width_factor)) + " "
                         + str(height) + " " 
                         + name + '\n')
@@ -93,9 +85,9 @@ if __name__ == "__main__":
         print("3. path to the .txt-file that will contain the result")
         print("4. integer for the height of labels")
         print("5. integer for the width of a single letter of the label (will be multiplied with number of letters in the label)")
-        print("6. integer for the scaling factor (how many decimals to round, use higher value for closer points (Paris=5, USA=4)")
+        print("6. integer for the scaling factor (1 = meters, 1000 = kilometers etc)")
         print("Example argument: python3 city.py germantowns.query ../res/germantowns.json ../res/germantowns.txt 300 100 4")
-        # python3 city.py mcdonalds.query ../res/mcdonalds.json ../res/mcdonalds.txt 30 10 5
+        # python3 city.py ../res/queries/americantowns.query ../res/json/americantowns.json ../res/instances/americantowns.txt 6 5 1000
     else:
 
         # parsing arguments
